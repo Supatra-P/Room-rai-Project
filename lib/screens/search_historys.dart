@@ -28,7 +28,10 @@ class _HistorySearchState extends State<HistorySearch> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,color: Color.fromRGBO(243, 166, 182, 1),)),
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Color.fromRGBO(243, 166, 182, 1),
+            )),
         title: Text(
           "History",
           style: TextStyle(
@@ -49,21 +52,34 @@ class _HistorySearchState extends State<HistorySearch> {
                 return ListTile(
                   title: Row(
                     children: [
-                      Icon(Icons.history, color: Color.fromRGBO(243, 166, 182, 1)),
-                      SizedBox(width: 8,),
-                      Text(data.codeRoom!, style: TextStyle(color: Color.fromRGBO(243, 166, 182, 1), fontWeight: FontWeight.bold),),
+                      Icon(Icons.history,
+                          color: Color.fromRGBO(243, 166, 182, 1)),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        data.codeRoom!,
+                        style: TextStyle(
+                            color: Color.fromRGBO(243, 166, 182, 1),
+                            fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   subtitle: Row(
                     children: [
-                      SizedBox(width: 32,),
+                      SizedBox(
+                        width: 32,
+                      ),
                       Text(data.building!),
                     ],
                   ),
                   onTap: () {
                     final route = MaterialPageRoute(
                       builder: (context) => demoMap(
-                        detail: data.building,
+                        codeRoom: data.codeRoom!,
+                        floor: data.floor!,
+                        room: data.room!,
+                        building: data.building!,
                       ),
                     );
                     Navigator.push(context, route);
@@ -74,7 +90,8 @@ class _HistorySearchState extends State<HistorySearch> {
                         print(_taskController.taskListHistory.length);
                         _taskController.getTasks();
                       },
-                      icon: Icon(Icons.close_rounded, color: Color.fromARGB(255, 237, 103, 94))),
+                      icon: Icon(Icons.close_rounded,
+                          color: Color.fromARGB(255, 237, 103, 94))),
                 );
               },
             );

@@ -18,6 +18,7 @@ class MySearchDelegate extends SearchDelegate {
   int _floor = 0; //7
   int _room = 0; //10
   String _building = ""; //Faculity of Engineering
+  dynamic detail;
 
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
@@ -63,7 +64,10 @@ class MySearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     return Center(
       child: demoMap(
-        detail: _building,
+        codeRoom: _codeRoom,
+        floor: _floor,
+        room: _room,
+        building: _building,
       ),
     );
   }
@@ -87,7 +91,12 @@ class MySearchDelegate extends SearchDelegate {
         final data = providerRoom[index];
 
         return ListTile(
-          title: Text(data.codeRoom, style: TextStyle(color: Color.fromRGBO(243, 166, 182, 1), fontWeight: FontWeight.bold),),
+          title: Text(
+            data.codeRoom,
+            style: TextStyle(
+                color: Color.fromRGBO(243, 166, 182, 1),
+                fontWeight: FontWeight.bold),
+          ),
           subtitle: Text(data.building),
           onTap: () {
             _showSearch = data.showSearch;
@@ -95,16 +104,21 @@ class MySearchDelegate extends SearchDelegate {
             _floor = data.floor;
             _room = data.room;
             _building = data.building;
+            detail = data;
             _addTaskToDb();
             showResults(context);
             _taskController.getTasks();
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //       builder: (context) => RoomPage(
-            //             data: data,
-            //           )),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => demoMap(
+                  codeRoom: _codeRoom,
+                  floor: _floor,
+                  room: _room,
+                  building: _building,
+                ),
+              ),
+            );
           },
           trailing: IconButton(
             onPressed: () {

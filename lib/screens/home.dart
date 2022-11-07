@@ -144,10 +144,10 @@ class _MyHomePageState extends State<MyHomePage> {
       //   backgroundColor: Colors.white.withOpacity(0),
       // ),
 
-      body: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: demoMap(),
-      ),
+      // body: const MaterialApp(
+      //   debugShowCheckedModeBanner: false,
+      //   home: demoMap(),
+      // ),
       // floatingActionButton: Row(
       //   children: [
       //     SizedBox(width: 21,),

@@ -16,8 +16,12 @@ import '../controllers/task_controller.dart';
 import '../provider/favorite_provider.dart';
 
 class demoMap extends StatefulWidget {
-  const demoMap({Key? key, this.detail}) : super(key: key);
-  final detail;
+  const demoMap({Key? key, this.building, this.codeRoom, this.floor, this.room})
+      : super(key: key);
+  final codeRoom;
+  final floor;
+  final room;
+  final building;
 
   @override
   State<demoMap> createState() => _demoMapState();
@@ -32,20 +36,20 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
   static const LatLng engineerBuilding =
       LatLng(14.068894918174884, 100.60599664695536);
   static const LatLng scBuilding = LatLng(14.069248, 100.603473);
-
   static const markEGR = Marker(
     markerId: MarkerId('EGR Location'),
     position: engineerBuilding,
-    infoWindow:
-        InfoWindow(title: 'Faculity of Engineering', snippet: 'codeRoom'),
+    infoWindow: InfoWindow(
+      title: 'Faculity of Engineering',
+    ),
   );
 
   static const markSC = Marker(
     markerId: MarkerId('SC Location'),
     position: scBuilding,
     infoWindow: InfoWindow(
-        title: 'Social Sciences Building Complex or SC buildings',
-        snippet: 'codeRoom'),
+      title: 'SC buildings',
+    ),
   );
   //Set maker
   final Set<Marker> _markers = {
@@ -79,10 +83,62 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
     setState(() {});
   }
 
+  Future<void> _goToFinalLocation() async {
+    if ("Faculity of Engineering" == widget.building) {
+      const _defaultPosition = engineerBuilding;
+      _googleMapController
+          .animateCamera(CameraUpdate.newLatLngZoom(_defaultPosition, 15));
+    }
+    if ("SC buildings" == widget.building) {
+      const _defaultPosition = scBuilding;
+      _googleMapController
+          .animateCamera(CameraUpdate.newLatLngZoom(_defaultPosition, 15));
+    }
+
+    setState(() {});
+  }
+
+  getImage() {
+    String imgBuilding = 'assets/images/logo.png';
+    if ("Faculity of Engineering" == widget.building) {}
+    if ("SC buildings" == widget.building) {
+      imgBuilding = 'assets/images/SCf300ppi-0${widget.floor}.png';
+      return imgBuilding;
+    }
+    return imgBuilding;
+  }
+
+  clearPolyPoints() {
+    PolylinePoints polylinePoints = PolylinePoints();
+    polylineCoordinates.clear();
+    setState(() {});
+  }
+
+  bool isExist(polylineCoordinates) {
+    final isExist;
+    if (polylineCoordinates.length > 0) {
+      // getPolyPoints();
+      isExist = true;
+    } else {
+      // clearPolyPoints();
+      isExist = false;
+    }
+    return isExist;
+  }
+
+  void toggleNav() {
+    if (polylineCoordinates.length > 0) {
+      clearPolyPoints();
+    } else {
+      getPolyPoints();
+    }
+    setState(() {});
+  }
+
   getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
 
-    if ("Faculity of Engineering" == widget.detail) {
+    if ("Faculity of Engineering" == widget.building) {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
           google_api_key,
           PointLatLng(_defaultLocation.latitude, _defaultLocation.longitude),
@@ -94,7 +150,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
             ));
       }
     }
-    if ("Social Sciences Building Complex or SC buildings" == widget.detail) {
+    if ("SC buildings" == widget.building) {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
           google_api_key,
           PointLatLng(_defaultLocation.latitude, _defaultLocation.longitude),
@@ -110,10 +166,10 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
   }
 
   checkBuildingLocation() {
-    if ("Faculity of Engineering" == widget.detail) {
+    if ("Faculity of Engineering" == widget.building) {
       _markers.add(markEGR);
     }
-    if ("Social Sciences Building Complex or SC buildings" == widget.detail) {
+    if ("SC buildings" == widget.building) {
       _markers.add(markSC);
     }
   }
@@ -159,7 +215,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "EGR302",
+                  "${widget.codeRoom}",
                   style: TextStyle(
                       color: Color.fromRGBO(243, 166, 182, 1),
                       fontWeight: FontWeight.bold,
@@ -169,7 +225,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                   height: 4,
                 ),
                 Text(
-                  "Faculty of Engineering",
+                  "${widget.building}",
                   style: TextStyle(fontSize: 18),
                 ),
                 Row(
@@ -180,7 +236,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                           height: 16,
                         ),
                         Text(
-                          "3",
+                          "${widget.floor}",
                           style: TextStyle(
                               color: Color.fromRGBO(243, 166, 182, 1),
                               fontWeight: FontWeight.bold,
@@ -204,7 +260,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                           height: 16,
                         ),
                         Text(
-                          "2",
+                          "${widget.room}",
                           style: TextStyle(
                               color: Color.fromRGBO(243, 166, 182, 1),
                               fontWeight: FontWeight.bold,
@@ -258,7 +314,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(28),
                         child: Image.asset(
-                          'assets/images/SCf300ppi-03.png',
+                          getImage(),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -277,13 +333,13 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
     final providerFav = FavoriteProvider.of(context);
 
     checkBuildingLocation();
-    print("name building: ${widget.detail}");
+    print("name building: ${widget.building}");
     print("mark count: ${_markers.length}");
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        titleSpacing: 8,
+        titleSpacing: 4.5,
         title: Row(children: [
           // favorite icon
           Container(
@@ -309,7 +365,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
               left: MediaQuery.of(context).size.width / 4,
             ),
             child: Text(
-              "Room-Rai",
+              " Room-Rai",
               style: TextStyle(
                 color: Color.fromRGBO(243, 166, 182, 1),
                 fontWeight: FontWeight.bold,
@@ -321,7 +377,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
           Container(
             width: 45,
             margin: EdgeInsets.only(
-              right: 16,
+              right: 10,
             ),
             decoration: BoxDecoration(
               color: Color.fromRGBO(243, 166, 182, 1),
@@ -402,14 +458,23 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 50, vertical: 2),
                   ),
-                  child: Text(
-                    "Start",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: !isExist(polylineCoordinates)
+                      ? Text(
+                          "Start",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Text(
+                          "End",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                   onPressed: getPolyPoints,
                 ),
               ),
@@ -422,21 +487,21 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
         children: [
           Container(
             width: 56,
-            margin: EdgeInsets.only(left: 21),
+            margin: EdgeInsets.only(left: 14),
             padding: const EdgeInsets.only(top: 24, left: 12),
             alignment: Alignment.centerLeft,
             child: Column(
               children: [
                 SizedBox(
-                  height: 150,
+                  height: MediaQuery.of(context).size.height / 6.3,
                 ),
                 // compass
                 FloatingActionButton(
                   heroTag: "compassbtn",
-                  onPressed: () {},
+                  onPressed: _goToFinalLocation,
                   backgroundColor: Colors.white,
                   child: const Icon(
-                    Icons.rocket_outlined,
+                    Icons.location_on_outlined,
                     size: 28,
                     color: Color.fromRGBO(243, 166, 182, 1),
                   ),
@@ -450,27 +515,15 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                   onPressed: _goToDefaultLocation,
                   backgroundColor: Colors.white,
                   child: const Icon(
-                    Icons.location_on_outlined,
+                    Icons.my_location_rounded,
                     size: 28,
                     color: Color.fromRGBO(243, 166, 182, 1),
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 21,
-          ),
-          Container(
-            width: 56,
-            padding: const EdgeInsets.only(top: 24, left: 12),
-            alignment: Alignment.centerRight,
-            child: Column(
-              children: [
                 SizedBox(
-                  height: 150,
+                  height: 4,
                 ),
-                // show room direction
+
                 FloatingActionButton(
                   heroTag: "roombtn",
                   onPressed: () {
@@ -478,7 +531,7 @@ class _demoMapState extends State<demoMap> with SingleTickerProviderStateMixin {
                   },
                   backgroundColor: Colors.white,
                   child: const Icon(
-                    Icons.local_library_outlined,
+                    Icons.manage_search_sharp,
                     size: 28,
                     color: Color.fromRGBO(243, 166, 182, 1),
                   ),

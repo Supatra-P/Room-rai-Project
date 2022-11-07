@@ -38,7 +38,7 @@ class _FavoritePageState extends State<FavoritePage> {
               child: IconButton(
                 onPressed: () {
                   final route = MaterialPageRoute(
-                    builder: (context) => const MyHomePage(),
+                    builder: (context) => const demoMap(),
                   );
                   Navigator.push(context, route);
                 },
@@ -95,14 +95,22 @@ class _FavoritePageState extends State<FavoritePage> {
           _building = data.building;
 
           return ListTile(
-            title: Text(data.codeRoom, style: TextStyle(color: Color.fromRGBO(243, 166, 182, 1), fontWeight: FontWeight.bold),),
+            title: Text(
+              data.codeRoom,
+              style: TextStyle(
+                  color: Color.fromRGBO(243, 166, 182, 1),
+                  fontWeight: FontWeight.bold),
+            ),
             subtitle: Text(data.building),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => demoMap(
-                    detail: _building,
+                    codeRoom: _codeRoom,
+                    floor: _floor,
+                    room: _room,
+                    building: _building,
                   ),
                   // MyHomePage(),
                 ),
