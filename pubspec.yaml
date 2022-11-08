@@ -45,7 +45,13 @@ dependencies:
   google_maps_flutter: ^2.1.7
   location: ^4.4.0
   flutter_svg: ^1.1.0  
+  flutter_launcher_icons: ^0.10.0
 
+flutter_icons:
+  android: true
+  image_path: "assets/images/logoapp.png"
+  ios: true
+  remove_alpha_ios: true
 
 
 dev_dependencies:
