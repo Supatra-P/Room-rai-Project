@@ -1,6 +1,6 @@
 # Room-Rai Project
 
-Room-Rai is a mobile application for navigating users to destinations that focus on classrooms at Thammasat university.
+Room-Rai is a mobile application for navigating users to destinations that focus on classroom at Thammasat university.
 
 ### Tech stack
 <a href="https://www.figma.com"><img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" /></a>
